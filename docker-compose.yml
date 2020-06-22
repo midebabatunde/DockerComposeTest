@@ -1,0 +1,42 @@
+version: '3.7'
+services:  
+  #kibana container
+  kibana:    
+    container_name: kibana
+    hostname: kibana
+    image: kibana:6.4.2
+    ports:
+      - 5601:5601
+    networks:
+      - stacknet
+
+  #Mysql container
+  mysql:
+    container_name: mqsql
+    hostname: mysql
+    build: ./mysql/8.0
+    #image: mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=pass123"
+    networks:
+      - stacknet
+    #Expose port 3306 to allow users to connect and perform operations.
+    ports:
+        - 3306:3306
+
+  #Nginx container
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    build: ./docker-nginx/stable/alpine
+    #image: nginx 
+    networks:
+      - stacknet
+    #Expose port 80
+    ports:
+        - 8081:80
+    command: /bin/bash -c "nginx -g 'daemon off;'"
+
+networks:
+   stacknet:
+    driver: bridge
